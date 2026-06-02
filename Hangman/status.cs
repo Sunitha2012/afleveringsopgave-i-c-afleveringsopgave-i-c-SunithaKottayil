@@ -1,5 +1,3 @@
-
-
 namespace Hangman
 {
     class Status
