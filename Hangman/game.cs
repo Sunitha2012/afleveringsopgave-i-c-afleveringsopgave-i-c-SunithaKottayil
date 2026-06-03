@@ -5,6 +5,8 @@ namespace Hangman
         public void Start()
         {
             Word word = new Word(); // get a variable from the word class 
+            Status status = new Status();
+
 
             string WordGuess = word.RandomWord(); // accessing method RandomWord from word class 
 
@@ -61,6 +63,8 @@ namespace Hangman
                     lives--;
                     Console.WriteLine("Wrong! Lives left: " + lives);
                 }
+                status.DrawHangman(lives);
+
 
                 Console.WriteLine(new string(Secret));
             }
