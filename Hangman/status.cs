@@ -1,69 +1,116 @@
+using System.Collections.Generic;
 
 namespace Hangman
 {
     class Status
     {
-        public void ShowProgress(string secret)
+        public string BuildHeader()
         {
-            Console.WriteLine("Word: " + secret);
+            return
+@"HANGMAN
+========================================================================
+";
         }
 
-
-
-        public void DrawHangman(int lives)
+        // bygger midterdelen af spillet
+        public string BuildMainSection(int lives, int maxLives, char[] secret) //
         {
-            Console.Clear();
+            List<string> hang = GetHangmanLines(lives); // henter linjer fra hangmanline and add based on lives
+            string wordLine = string.Join(" ", secret); // tilføjer gættet letter til secret ord 
+            string hearts = GetHearts(lives, maxLives);
 
-            //Top hanging tree
-            Console.ForegroundColor = ConsoleColor.DarkGreen;
-            Console.WriteLine("  +---+");
-            Console.WriteLine("  |   |");
-            Console.ResetColor();
+            return
+$@"{hang[0]}
+{hang[1]}
+{hang[2]}
+{hang[3]}
+{hang[4]}
+{hang[5]}
 
-            // HEAD
-            if (lives <= 5)
-                Console.WriteLine("  |  🧑");
-            else
-                Console.WriteLine("  |");
+Word:  {wordLine}
+Lives: {hearts}
 
-            // BODY + ARMS
-            if (lives <= 3)
-                Console.WriteLine("  |  /|\\");
-            else if (lives == 4)
-                Console.WriteLine("  |   |");
-            else
-                Console.WriteLine("  |");
-
-            // LEGS
-            if (lives == 1)
-                Console.WriteLine("  |  /");
-            else if (lives == 0)
-                Console.WriteLine("  |  / \\");
-            else
-                Console.WriteLine("  |");
-
-            Console.WriteLine("  |");
-            Console.ForegroundColor = ConsoleColor.DarkYellow;
-            Console.WriteLine("=========");
-            Console.ResetColor();
+";
         }
 
-        public void ShowRemainingLetters(List<char> guessed)
+        public string BuildAlphabetSection(List<char> guessedLetters)
         {
-            string alphabet = "abcdefghijklmnopqrstuvwxyz";
-            string remaining = "";
+            string row = AllLetters(guessedLetters);
 
-            foreach (char c in alphabet)
+            return
+$@"Alphabet:
+{row}
+========================================================================
+";
+        }
+
+        public List<string> GetHangmanLines(int lives)
+        {
+            string head = " ";
+            string body = " ";
+            string leftArm = " ";
+            string rightArm = " ";
+            string leftLeg = " ";
+            string rightLeg = " ";
+
+            if (lives <= 5) head = "👦";
+            if (lives <= 4) body = "|";
+            if (lives <= 3) leftArm = "/";
+            if (lives <= 2) rightArm = "\\";
+            if (lives <= 1) leftLeg = "/";
+            if (lives <= 0) rightLeg = "\\";
+
+            return new List<string>
             {
-                if (!guessed.Contains(c))
+                "   ┏━━━━━━━━━━━━┓",
+                "   ┃            |",
+                $"   ┃           {head}",
+                $"   ┃           {leftArm}{body}{rightArm}",
+                $"   ┃           {leftLeg} {rightLeg}",
+                "   ┃"
+            };
+        }
+
+        // Bygger hjerte til lives 🤎 og  🖤 for mistede
+        public string GetHearts(int lives, int maxLives)
+        {
+            string hearts = "";
+
+            // Gå gennem alle indexer (fra 0 til maxLives-1)
+            for (int index = 0; index < maxLives; index++)
+            {
+                if (index < lives)
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                    remaining += c + " ";
-                    Console.ResetColor();
+                    hearts += "🤎 ";
+                }
+                else
+                {
+                    hearts += "🖤 ";      //mistet lives
                 }
             }
 
-            Console.WriteLine("Remaining letters: " + remaining);
+            return hearts;
+        }
+
+        // Metoden Returnerer alfabetet som en streng, hvor gættede bogstaver erstattes med "_"
+        public string AllLetters(List<char> guessedLetters)
+        {
+            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string row = "";
+
+            foreach (char c in alphabet)
+            {
+                if (guessedLetters.Contains(c))
+                {
+                    row += "_ ";
+                }
+                else
+                {
+                    row += c + " ";
+                }
+            }
+
+            return row;
         }
     }
 }
