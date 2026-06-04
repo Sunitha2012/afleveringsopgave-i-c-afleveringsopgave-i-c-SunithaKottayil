@@ -4,7 +4,7 @@ namespace Hangman
 {
     class Status
     {
-        public string BuildHeader()
+        public string Header()
         {
             return
 @"HANGMAN
@@ -33,7 +33,7 @@ Lives: {hearts}
 ";
         }
 
-        public string BuildAlphabetSection(List<char> guessedLetters)
+        public string AlphabetSection(List<char> guessedLetters)
         {
             string row = AllLetters(guessedLetters);
 
@@ -81,7 +81,7 @@ $@"Alphabet:
             {
                 if (index < lives)
                 {
-                    hearts += "🤎 ";
+                    hearts += "💖 ";
                 }
                 else
                 {
@@ -94,23 +94,24 @@ $@"Alphabet:
 
         // Metoden Returnerer alfabetet som en streng, hvor gættede bogstaver erstattes med "_"
         public string AllLetters(List<char> guessedLetters)
+{
+    char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+    string row = "";
+
+    foreach (char c in alphabet)
+    {
+        if (guessedLetters.Contains(c))
         {
-            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            string row = "";
-
-            foreach (char c in alphabet)
-            {
-                if (guessedLetters.Contains(c))
-                {
-                    row += "_ ";
-                }
-                else
-                {
-                    row += c + " ";
-                }
-            }
-
-            return row;
+            row += "_ ";
         }
+        else
+        {
+            row += c + " ";
+        }
+    }
+
+    return row;
+}
+
     }
 }
