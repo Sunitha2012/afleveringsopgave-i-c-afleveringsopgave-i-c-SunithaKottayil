@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Hangman
 {
     class Status
@@ -7,30 +5,30 @@ namespace Hangman
         public string Header()
         {
             return
-@"HANGMAN
-========================================================================
-";
+                @"HANGMAN
+                ========================================================================
+                ";
         }
 
-        // bygger midterdelen af spillet
-        public string BuildMainSection(int lives, int maxLives, char[] secret) //
+        // Viser Spil  Sektion
+        public string MainSection(int lives, int maxLives, char[] secret) 
         {
-            List<string> hang = GetHangmanLines(lives); // henter linjer fra hangmanline and add based on lives
+            List<string> hang = DrawHangMan(lives); // henter linjer fra hangmanline and add based on lives
             string wordLine = string.Join(" ", secret); // tilføjer gættet letter til secret ord 
             string hearts = GetHearts(lives, maxLives);
 
             return
-$@"{hang[0]}
-{hang[1]}
-{hang[2]}
-{hang[3]}
-{hang[4]}
-{hang[5]}
+                $@"{hang[0]}
+                {hang[1]}
+                {hang[2]}
+                {hang[3]}
+                {hang[4]}
+                {hang[5]}
 
-Word:  {wordLine}
-Lives: {hearts}
+                Word:  {wordLine} 
+                Lives: {hearts}
 
-";
+                ";
         }
 
         public string AlphabetSection(List<char> guessedLetters)
@@ -38,13 +36,13 @@ Lives: {hearts}
             string row = AllLetters(guessedLetters);
 
             return
-$@"Alphabet:
-{row}
-========================================================================
-";
+                $@"Alphabet:
+                {row}
+                ========================================================================
+                ";
         }
 
-        public List<string> GetHangmanLines(int lives)
+        public List<string> DrawHangMan(int lives)
         {
             string head = " ";
             string body = " ";
@@ -71,7 +69,7 @@ $@"Alphabet:
             };
         }
 
-        // Bygger hjerte til lives 🤎 og  🖤 for mistede
+        // Bygger hjerte til lives  og   mistede
         public string GetHearts(int lives, int maxLives)
         {
             string hearts = "";
@@ -94,24 +92,16 @@ $@"Alphabet:
 
         // Metoden Returnerer alfabetet som en streng, hvor gættede bogstaver erstattes med "_"
         public string AllLetters(List<char> guessedLetters)
-{
-    char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-    string row = "";
-
-    foreach (char c in alphabet)
-    {
-        if (guessedLetters.Contains(c))
         {
-            row += "_ ";
-        }
-        else
-        {
-            row += c + " ";
-        }
-    }
+            char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+            string row = "";
 
-    return row;
-}
+            foreach (char c in alphabet)
+            {
+                row += guessedLetters.Contains(c) ? "_ " : c + " ";
+            }
 
+            return row;
+        }
     }
 }

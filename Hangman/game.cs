@@ -1,5 +1,3 @@
-
-
 namespace Hangman
 {
     class Game
@@ -12,7 +10,7 @@ namespace Hangman
             Console.Write(status.Header());
             Console.ResetColor();
 
-            Console.Write(status.BuildMainSection(lives, maxLives, secret));
+            Console.Write(status.MainSection(lives, maxLives, secret));
 
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write(status.AlphabetSection(guessedLetters));

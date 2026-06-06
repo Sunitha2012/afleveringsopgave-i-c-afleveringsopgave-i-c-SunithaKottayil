@@ -20,8 +20,8 @@ namespace Hangman
             "THE LAST OF US", "GOD OF WAR", "METAL GEAR SOLID"
         };
 
-        public Dictionary<string, List<string>> GameLevels = new();
-       
+        public Dictionary<string, List<string>> GameLevels = new(); // Difficultylevel: list
+        public Random Rnd = new();
 
         public Word() // auto update object -  line 134 in game.cs 
         {
@@ -30,7 +30,6 @@ namespace Hangman
             GameLevels["Hard"] = HardWords;
         }
 
- public Random Rnd = new();
         public string RandomWord(string level)
         {
             var words = GameLevels[level];
