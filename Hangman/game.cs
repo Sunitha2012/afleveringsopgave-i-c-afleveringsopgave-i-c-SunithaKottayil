@@ -2,24 +2,83 @@ namespace Hangman
 {
     class Game
     {
-        public int maxLives;
-
-        private void Canvas(Status status, int lives, int maxLives, char[] secret, List<char> guessedLetters) // alle parametre , den skal bruge
+        
+    private bool PlayGame()
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write(status.Header());
-            Console.ResetColor();
+            Word word = new Word();// Lav et nyt Word‑objekt, så jeg kan bruge Word‑klassens metoder.
+            Status status = new Status();
 
-            Console.Write(status.MainSection(lives, maxLives, secret));
+            string level = SelectLevel(); // variable level gemmer resultat af metoden 
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write(status.AlphabetSection(guessedLetters));
-            Console.ResetColor();
+            if (level == "EXIT")
+                return false;
 
-            Console.Write("Guess a letter (or type 0 to exit): ");
+            string wordGuess = word.RandomWord(level).ToUpper();
+
+            char[] secret = new char[wordGuess.Length];// gemmer wordguess som char array ,så skal vi  ændre ét tegn ad gangen
+            
+
+           for (int i = 0; i < secret.Length; i++)
+            {
+                if (wordGuess[i] == ' ')
+                    secret[i] = ' ';
+                else
+                    secret[i] = '-';
+            }
+
+
+            int lives = 6;
+            List<char> guessedLetters = new List<char>();
+
+            while (lives > 0 && new string(secret) != wordGuess)
+            {
+                Console.Clear();
+                Canvas(status, lives, secret, guessedLetters);
+
+                string guessInput = ValidateInput(guessedLetters);
+
+                if (guessInput == "EXIT")
+                    return false;
+
+                char guess = guessInput[0];
+                guessedLetters.Add(guess);
+
+                bool found = false;
+
+                for (int i = 0; i < wordGuess.Length; i++)
+                {
+                    if (wordGuess[i] == guess)
+                    {
+                        secret[i] = guess;
+                        found = true;
+                    }
+                }
+
+                if (!found)
+                    lives--;
+            }
+
+            Console.Clear();
+            Canvas(status, lives, secret, guessedLetters);// method fra linje 144 
+
+            if (new string(secret) == wordGuess)
+            {
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"Well done ...you guessed correct : {wordGuess}");
+                Console.ResetColor();
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nGame Over!");
+                Console.ResetColor();
+                Console.WriteLine($"The word was: {wordGuess}");
+            }
+
+            return AskPlayAgain();
         }
 
-        private string GetDifficultyChoice()
+        private string SelectLevel()
         {
             while (true)
             {
@@ -29,19 +88,19 @@ namespace Hangman
                 Console.WriteLine("===== HANGMAN =====");
                 Console.ResetColor();
 
-                Console.WriteLine("Choose difficulty:");
+                Console.WriteLine("Choose difficultylevel:");
                 Console.WriteLine("1. Easy");
                 Console.WriteLine("2. Medium");
                 Console.WriteLine("3. Hard");
                 Console.WriteLine("0. Exit");
                 Console.Write("Your choice: ");
 
-                string choice = Console.ReadLine();
+                string choice = Console.ReadLine() ;
 
                 switch (choice)
                 {
                     case "0":
-                        return "EXIT";
+                        return "EXIT"; // linje 13 if level 0, return false dvs stop spillet 
 
                     case "1":
                         return "Easy";
@@ -56,18 +115,36 @@ namespace Hangman
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine("\nInvalid choice. Press Enter to try again...");
                         Console.ResetColor();
-                        Console.ReadLine();
+                        Console.ReadKey();
                         break;
                 }
             }
         }
 
+
+        private void Canvas(Status status, int lives, char[] secret, List<char> guessedLetters) // alle parametre , den skal bruge
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(status.Header());
+            Console.ResetColor();
+
+            Console.Write(status.MainSection(lives, secret));
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Write(status.AlphabetSection(guessedLetters));
+            Console.ResetColor();
+
+            Console.Write("Guess a letter (or type 0 to exit): ");
+        }
+
+        
         private string ValidateInput(List<char> guessedLetters)
         {
             while (true)
             {
-                string input = (Console.ReadLine() ?? "").Trim().ToUpper();
+                string input = Console.ReadLine() ?? "";
 
+            // Hvis spilleren ikke skriver noget
                 if (string.IsNullOrWhiteSpace(input))
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
@@ -75,6 +152,10 @@ namespace Hangman
                     Console.ResetColor();
                     continue;
                 }
+
+
+                input = input.Trim().ToUpper();
+
 
                 if (input == "0")
                     return "EXIT";
@@ -110,12 +191,12 @@ namespace Hangman
                 Console.Write("\nPlay again? (Y/N): ");
                 answer = (Console.ReadLine() ?? "").Trim().ToUpper();
 
-                if (answer == "Y" || answer == "YES")
+                if (answer == "Y" )
                 {
                     return true;
                 }
 
-                if (answer == "N" || answer == "NO")
+                if (answer == "N")
                 {
                     return false;
                 }
@@ -127,75 +208,7 @@ namespace Hangman
             } while (true);
         }
 
-        private bool PlayGame()
-        {
-            Word word = new Word();
-            Status status = new Status();
-
-            string level = GetDifficultyChoice();
-
-            if (level == "EXIT")
-                return false;
-
-            string wordGuess = word.RandomWord(level).ToUpper();
-
-            char[] secret = new char[wordGuess.Length];
-            List<char> guessedLetters = new List<char>();
-
-            for (int i = 0; i < secret.Length; i++)
-                secret[i] = wordGuess[i] == ' ' ? ' ' : '-';
-
-            int lives = 6;
-            maxLives = 6;
-
-            while (lives > 0 && new string(secret) != wordGuess)
-            {
-                Console.Clear();
-                Canvas(status, lives, maxLives, secret, guessedLetters);
-
-                string guessInput = ValidateInput(guessedLetters);
-
-                if (guessInput == "EXIT")
-                    return false;
-
-                char guess = guessInput[0];
-                guessedLetters.Add(guess);
-
-                bool found = false;
-
-                for (int i = 0; i < wordGuess.Length; i++)
-                {
-                    if (wordGuess[i] == guess)
-                    {
-                        secret[i] = guess;
-                        found = true;
-                    }
-                }
-
-                if (!found)
-                    lives--;
-            }
-
-            Console.Clear();
-            Canvas(status, lives, maxLives, secret, guessedLetters);
-
-            if (new string(secret) == wordGuess)
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"Well done ...you guessed correct : {wordGuess}");
-                Console.ResetColor();
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("\nGame Over!");
-                Console.ResetColor();
-                Console.WriteLine($"The word was: {wordGuess}");
-            }
-
-            return AskPlayAgain();
-        }
+        
 
         public void Start()
         {

@@ -13,7 +13,18 @@ Spillet har blandt andet:
 - Hjerter, der viser hvor mange liv du har tilbage  
 - Mulighed for at spille igen, når runden er slut  
 
-***
+## Filer  
+### program.cs.cs  
+Styrer hele spillet
+### Game.cs  
+Styrer spil logikken.Kalder på Status og Word klassen
+
+### Word.cs  
+Indeholder ordlisterne  
+
+### Status.cs  
+Står for alt det visuelle i konsollen.  Tegner header, hangman, hjerter, alfabet og resten af spilvisningen.  
+
 
 ## Flow
 
@@ -26,38 +37,21 @@ Find et tilfældigt ord
     |
 Gæt et bogstav
     |
-Er det korrekt? -- Nej -- Mist et liv (et hjerte forsvinder, og hangman bliver tegnet)
-        | Ja
-Afslør bogstavet
+Er det korrekt?
+    |-- Nej --> Mist et liv
+    |           (et hjerte forsvinder, og Hangman bliver tegnet)
     |
-Er spillet slut? -- Nej -- Gæt igen
-            | Ja
-      Ordet er fundet
-            |
-    Spil igen?
-        | Ja → Start forfra
-        | Nej → Slut
+    |-- Ja --> Tilføj bogstavet til secretArray
+                |
+                |-- Hvis der er liv tilbage --> Gæt næste bogstav
+                |
+                |-- Hvis ordet er gættet / ingen liv tilbage
+                        |
+                        Spil igen?
+                        |-- Ja --> Start forfra
+                        |-- Nej --> Slut
 ```
 
-***
-
-## Filer  
-
-### Game.cs  
-Styrer selve spillet.  
-Her kører hovedloopet, input bliver tjekket, og spilleren vælger sværhedsgrad.  
-Der er også en do-while, så man kan spille igen.  
-Kalder på Status og Word.  
-
-### Word.cs  
-Indeholder ordlisterne.  
-Bruger en dictionary til sværhedsgrader og vælger et tilfældigt ord.  
-
-### Status.cs  
-Står for alt det visuelle i konsollen.  
-Tegner header, hangman, hjerter, alfabet og resten af spilvisningen.  
-
-***
 
 ## Validering  
 Du må kun skrive bogstaver og 0 (ingen symboler eller andre tal).  

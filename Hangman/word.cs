@@ -2,38 +2,48 @@ namespace Hangman
 {
     class Word
     {
-        public List<string> EasyWords = new()
+        private List<string> EasyWords = new()
         {
-            "MINECRAFT", "FORTNITE", "ROBLOX", "TETRIS",
-            "MARIO", "SONIC", "POKEMON", "HALO"
+            "MARIO", "SONIC", "HALO", "FIFA",
+            "TETRIS", "ROBLOX", "POKEMON", "PIKACHU"
         };
 
-        public List<string> MediumWords = new()
+        private List<string> MediumWords = new()
         {
-            "CALL OF DUTY", "GRAND THEFT AUTO", "LEAGUE OF LEGENDS",
-            "ROCKET LEAGUE", "OVERWATCH", "FIFA", "EA SPORTS FC"
+            "MINECRAFT",    "FORTNITE",
+            "GRAN TURISMO", "ROCKET LEAGUE"
         };
 
-        public List<string> HardWords = new()
+        private List<string> HardWords = new()
         {
-            "RED DEAD REDEMPTION", "ELDEN RING", "DARK SOULS",
-            "THE LAST OF US", "GOD OF WAR", "METAL GEAR SOLID"
+            "DARK SOULS",     "ELDEN RING",
+            "NEED FOR SPEED", "LEAGUE OF LEGENDS",
+            "LARA CROFT",     "MASTER CHIEF",
+            "DONKEY KONG",    "CRASH BANDICOOT"
         };
 
-        public Dictionary<string, List<string>> GameLevels = new(); // Difficultylevel: list
-        public Random Rnd = new();
+        private Random Rnd = new();
 
-        public Word() // auto update object -  line 134 in game.cs 
-        {
-            GameLevels["Easy"] = EasyWords;
-            GameLevels["Medium"] = MediumWords;
-            GameLevels["Hard"] = HardWords;
-        }
-
+  //Metod til  at generere random ord 
         public string RandomWord(string level)
         {
-            var words = GameLevels[level];
-            return words[Rnd.Next(words.Count)];
+            List<string> wordList;
+
+            switch (level)
+            {
+                case "Easy":
+                    wordList = EasyWords;
+                    break;
+                case "Medium":
+                    wordList = MediumWords;
+                    break;
+                default:
+                    wordList = HardWords;
+                    break;
+            }
+
+            return wordList[Rnd.Next(wordList.Count)]; // væl et random ord fra index range (0,antalord)
         }
     }
 }
+

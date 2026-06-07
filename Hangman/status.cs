@@ -5,20 +5,26 @@ namespace Hangman
         public string Header()
         {
             return
-                @"HANGMAN
-                ========================================================================
+                $@"
+                H   H      A       N   N    GGGG     M   M      A       N   N
+                H   H     A A      NN  N   G         MM MM     A A      NN  N
+                HHHHH    A   A     N N N   G  GGG    M M M    A   A     N N N
+                H   H   AAAAAAA    N  NN   G    G    M   M   AAAAAAA    N  NN
+                H   H  A       A   N   N    GGGG     M   M  A       A   N   N
+
+
                 ";
         }
 
         // Viser Spil  Sektion
-        public string MainSection(int lives, int maxLives, char[] secret) 
+        public string MainSection(int lives, char[] secret) 
         {
             List<string> hang = DrawHangMan(lives); // henter linjer fra hangmanline and add based on lives
             string wordLine = string.Join(" ", secret); // tilføjer gættet letter til secret ord 
-            string hearts = GetHearts(lives, maxLives);
+            string hearts = GetHearts(lives);
 
             return
-                $@"{hang[0]}
+                $@"{hang[0]} 
                 {hang[1]}
                 {hang[2]}
                 {hang[3]}
@@ -69,26 +75,18 @@ namespace Hangman
             };
         }
 
-        // Bygger hjerte til lives  og   mistede
-        public string GetHearts(int lives, int maxLives)
+        // Bygger hjerte til lives  
+       public string GetHearts(int lives)
         {
             string hearts = "";
 
-            // Gå gennem alle indexer (fra 0 til maxLives-1)
-            for (int index = 0; index < maxLives; index++)
+            for (int i = 0; i < 6; i++)
             {
-                if (index < lives)
-                {
-                    hearts += "💖 ";
-                }
-                else
-                {
-                    hearts += "🖤 ";      //mistet lives
-                }
+                hearts += i < lives ? "❤️ " : "🖤 ";
             }
 
             return hearts;
-        }
+}
 
         // Metoden Returnerer alfabetet som en streng, hvor gættede bogstaver erstattes med "_"
         public string AllLetters(List<char> guessedLetters)
